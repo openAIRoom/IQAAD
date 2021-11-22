@@ -169,7 +169,7 @@ def phasecong2(im):
             MatrixEO = torch.ifft(c, 2)
             MatrixEOList.append(MatrixEO)
 
-            # An = abs(MatrixEO)  # Amplitude of even & odd filter response. # TODO abs为了求复数的模？
+            # An = abs(MatrixEO)  # Amplitude of even & odd filter response. 
             An = (MatrixEO[..., 0] ** 2 + MatrixEO[..., 1] ** 2) ** 0.5
             sumAn_ThisOrient = sumAn_ThisOrient + An  # Sum of amplitude responses.
             sumE_ThisOrient = sumE_ThisOrient + real(MatrixEO)  # Sum of even filter convolution results.
