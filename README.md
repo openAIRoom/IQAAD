@@ -5,6 +5,9 @@ Official implementation for the paper "***Unsupervised Anomaly Detection Based o
 This project is a [Pytorch](https://pytorch.org/) implementation of IQAAD. 
 This paper introduce the full-reference image quality assessment(FR-IQA) metric into the reconstruction error, taking the input image as reference. Besides, IQAAD improves two classical FR-IQA metrics, the gradient magnitude similarity deviation(GMSD) and the feature similarity induced metric(FSIM), so they can better haddle the intrinsic difficulties of anomaly detection tasks. In addition, in order to maintain high reconstruction quality for normal samples while suppressing that for abnormal samples, IQAAD proposes a memory bank with a new updating stratery.
 
+## Pipeline of IQAAD
+[![logo](https://github.com/openAIRoom/IQAAD/blob/main/Pipeline.jpg)](https://github.com/openAIRoom/IQAAD/blob/main/Pipeline.jpg) 
+
 ## How To Use This Code
 You will need:
   - Python 3.7
