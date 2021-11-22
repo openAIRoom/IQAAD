@@ -23,7 +23,7 @@ def unorm_image(image, mean, std):
 
 def to_gray(tensor):
     '''
-    3通道的RGB图像转为1通道的灰度图像
+    rgb to gray
     '''
     R, G, B = tensor[:, 0, ...], tensor[:, 1, ...], tensor[:, 2, ...]
     # gray = 0.299 * R + 0.587 * G + 0.114 * B
@@ -34,7 +34,7 @@ def to_gray(tensor):
 
 def replicate_gray(tensor):
     '''
-    变为灰度图像并扩展为3通道
+    repeat to 3 channels
     '''
     return to_gray(tensor).repeat(1, 3, 1, 1)
 
@@ -82,7 +82,7 @@ def plot_current_roc(epoch, rocauc, viz, plot_rocauc, k=1):
 
 #############################################################################
 def load_model(memory_model, pretrained):
-    assert "model/" + pretrained, '未找到模型'
+    assert "model/" + pretrained, 'model not found'
     weights = torch.load("model/" + pretrained)
 
     pretrained_memory_model_dict = weights['memory_model']
@@ -100,5 +100,5 @@ def save_model(memory_model, epoch):
         os.makedirs("model/")
 
     # torch.save(state, model_out_path)
-    torch.save(state, model_out_path, _use_new_zipfile_serialization=False)  #保存的pytorch1.6模型转给1.4用
+    torch.save(state, model_out_path, _use_new_zipfile_serialization=False) 
     print("Model saved to {0}".format(model_out_path))
