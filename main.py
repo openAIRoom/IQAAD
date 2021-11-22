@@ -34,15 +34,15 @@ os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 
 
 def parse_arg():
-    parser = argparse.ArgumentParser('参数管理')
+    parser = argparse.ArgumentParser('Parameters')
     parser.add_argument('--dataroot', default="G:/Datasets/MVTec/mvtec_anomaly_detection/zipper/", type=str, help='data path')
     parser.add_argument('--img_size', default=256, type=int, help='image size')
-    parser.add_argument('--nc', default=3, type=int, help='输入图像channel')
+    parser.add_argument('--nc', default=3, type=int, help='channel of input image')
     parser.add_argument('--dim', type=int, default=512, help='size of the latent vectors')
     parser.add_argument('--K', type=int, default=100, help='number of latent vectors')
     parser.add_argument('--batch_size', default=6, type=int, help='batch size')
 
-    parser.add_argument('--lr', default=0.0001, type=float, help='学习速率')
+    parser.add_argument('--lr', default=0.0001, type=float, help='learning rate')
     parser.add_argument('--beta1', type=float, default=0.5, help='beta1')
     parser.add_argument('--beta2', type=float, default=0.999, help='beta2')
     parser.add_argument('--n_epoch', type=int, default=2000, help='epoch')
@@ -54,8 +54,8 @@ def parse_arg():
     parser.add_argument('--loss_gms', type=float, default=1, help='weight of the gms loss')
     parser.add_argument('--loss_ssim', type=float, default=1, help='weight of the ssim loss')
 
-    parser.add_argument("--pretrained", default="", type=str, help="加载模型")
-    parser.add_argument("--outfile", default="results/", type=str, help="加载模型")
+    parser.add_argument("--pretrained", default="", type=str, help="load model")
+    parser.add_argument("--outfile", default="results/", type=str, help="outfile")
 
     return parser.parse_known_args()[0]
 
@@ -114,7 +114,7 @@ def test(epoch, memory_model, test_loader, errors, rocauc_image, rocauc_pixel):
     for iteration, (datas, masks, labels) in enumerate(tqdm(test_loader)):
         datas = datas.to(device)
 
-        # 用于计算roc
+        # to calculate roc
         gt_list.extend(labels.cpu().numpy())
         gt_mask_list.extend(masks.int().cpu().numpy())
 
@@ -147,7 +147,6 @@ def test(epoch, memory_model, test_loader, errors, rocauc_image, rocauc_pixel):
             save_image(torch.cat(save_maps, dim=0).data.cpu(),
                        '{}/image_{}.jpg'.format(opt.outfile + 'test/epoch_' + str(epoch), iteration + 1), nrow=3)
 
-    # 计算msgms的auc
     msfsim_img_roc_auc, msfsim_per_pixel_rocauc = auc_calculate(msfsim_scores_maps, gt_list, gt_mask_list)
     rocauc_image['msfsim_img_rocauc'].append(msfsim_img_roc_auc)
     rocauc_pixel['msfsim_per_pixel_rocauc'].append(msfsim_per_pixel_rocauc)
@@ -213,7 +212,7 @@ if __name__ == '__main__':
     memory_model = MemoryModule(opt.nc, opt.dim, opt.K).to(device)
     if opt.pretrained:
         load_model(memory_model, opt.pretrained)
-        print('加载模型完成!')
+        print('Model is loaded!')
 
     params_memory = list(memory_model.parameters())
     params = params_memory
@@ -240,7 +239,7 @@ if __name__ == '__main__':
             test(epoch, memory_model, data_loader.valid, errors, rocauc_image, rocauc_pixel)
 
         scheduler.step()
-        # visdom显示
+        # visdom
         if epoch == opt.start_epoch:
             viz = visdom.Visdom(env='main', use_incoming_socket=False)
             plot_errors = {'X': [], 'Y': [], 'legend': list(errors.keys())}
