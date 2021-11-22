@@ -20,7 +20,7 @@ warnings.filterwarnings('ignore')
 
 def load_image(file_path, image_size=512, is_gray=False):
     '''
-    读取图像，是否做增强
+    load data
     '''
     img = Image.open(file_path)
     if is_gray is False and img.mode != 'RGB':
