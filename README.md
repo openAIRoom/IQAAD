@@ -13,7 +13,7 @@ You will need:
 
 ## Results
 [![logo](https://github.com/openAIRoom/IQAAD/blob/main/Samples/mvtec.jpg)](https://github.com/openAIRoom/IQAAD/blob/main/Samples/mvtec.jpg) 
-[![logo](https://github.com/openAIRoom/IQAAD/blob/main/Samples/mnist.png)](https://github.com/openAIRoom/IQAAD/blob/main/Samples/mnist.png) 
+[![logo](https://github.com/openAIRoom/IQAAD/blob/main/Samples/mvtec_more.jpg)](https://github.com/openAIRoom/IQAAD/blob/main/Samples/mvtec_more.jpg) 
 
 ## Citation
 If you find our code helpful in your research or work please cite our paper.
