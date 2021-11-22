@@ -2,7 +2,7 @@
 Official implementation for the paper "***Unsupervised Anomaly Detection Based on Full-Reference Image Quality Assessment***"
 
 ## Descriptions
-This project is a [Pytorch](https://pytorch.org/) implementation of IQAAD. This paper improves two classical full-reference image quality assessment(FR-IQA), the gradient magnitude similarity deviation(GMSD) and the feature similarity induced metric(FSIM), which can better haddle the intrinsic difficulties of anomaly detection tasks.
+This project is a [Pytorch](https://pytorch.org/) implementation of IQAAD. This paper introduce the full-reference image quality assessment(FR-IQA) metric into the reconstruction error, taking the input image as reference. Besides, IQAAD improves two classical FR-IQA metrics, the gradient magnitude similarity deviation(GMSD) and the feature similarity induced metric(FSIM), so they can better haddle the intrinsic difficulties of anomaly detection tasks. In addition, in order to maintain high reconstruction quality for normal samples while suppressing that for abnormal samples, IQAAD proposes a memory bank with a new updating stratery.
 
 ## How To Use This Code
 You will need:
