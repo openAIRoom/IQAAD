@@ -218,7 +218,7 @@ def phasecong2(im):
     return ResultPC
 
 
-def fsim(imageRef, imageDis, as_loss):
+def fsimm(imageRef, imageDis, as_loss):
     channels = imageRef.shape[1]
     if channels == 3:
         Y1 = (0.299 * imageRef[:, 0, :, :] + 0.587 * imageRef[:, 1, :, :] + 0.114 * imageRef[:, 2, :, :]).unsqueeze(1)
@@ -265,14 +265,14 @@ def fsim(imageRef, imageDis, as_loss):
         gradientMap2 = torch.sqrt(IxY2 ** 2 + IyY2 ** 2 + 1e-12)
 
     T1 = 0.85
-    T2 = 0.0026 * 255 ** 2
+    T2 = 0.0026 * (255 / 3.) ** 2
     PCSimMatrix = (2 * PC1 * PC2 + T1) / (PC1 ** 2 + PC2 ** 2 + T1)
     gradientSimMatrix = (2 * gradientMap1 * gradientMap2 + T2) / (gradientMap1 ** 2 + gradientMap2 ** 2 + T2)
     PCm = torch.max(PC1, PC2)
     SimMatrix = gradientSimMatrix * PCSimMatrix * PCm
-    FSIM_val = torch.sum(SimMatrix, dim=[1, 2, 3]) / torch.sum(PCm, dim=[1, 2, 3])
+    FSIMM_val = torch.sum(SimMatrix, dim=[1, 2, 3]) / torch.sum(PCm, dim=[1, 2, 3])
     if channels == 1:
-        return FSIM_val, SimMatrix / (PCm + eps)
+        return FSIMM_val, SimMatrix / (PCm + eps)
 
     T3 = 200
     T4 = 200
@@ -282,39 +282,32 @@ def fsim(imageRef, imageDis, as_loss):
     SimMatrixC = gradientSimMatrix * PCSimMatrix * PCm * \
                  torch.sign(gradientSimMatrix) * ((torch.abs(ISimMatrix * QSimMatrix) + 1e-12) ** 0.03)
 
-    # out_map = gradientSimMatrix * PCSimMatrix * \
-    #              torch.sign(gradientSimMatrix) * ((torch.abs(ISimMatrix * QSimMatrix) + 1e-12) ** 0.03)
-    #
-    # return torch.sum(SimMatrixC, dim=[1, 2, 3]) / torch.sum(PCm, dim=[1, 2, 3]), out_map
-
     out_map = gradientSimMatrix ** 0.999 * PCSimMatrix ** 0.001
     return torch.sum(SimMatrixC, dim=[1, 2, 3]) / torch.sum(PCm, dim=[1, 2, 3]), out_map
 
 
-class FSIM(torch.nn.Module):
-    # Refer to https://sse.tongji.edu.cn/linzhang/IQA/FSIM/FSIM.htm
-
+class FSIMM(torch.nn.Module):
     def __init__(self, channels=3):
-        super(FSIM, self).__init__()
+        super(FSIMM, self).__init__()
 
     def forward(self, y, x, as_loss=True):
         assert x.shape == y.shape
         x = x * 255
         y = y * 255
         if as_loss:
-            score, out_map = fsim(x, y, as_loss=as_loss)
+            score, out_map = fsimm(x, y, as_loss=as_loss)
             return score, out_map
         else:
             with torch.no_grad():
-                score, out_map = fsim(x, y, as_loss=as_loss)
+                score, out_map = fsimm(x, y, as_loss=as_loss)
             return score, out_map
 
 
-class MSFSIM(torch.nn.Module):
+class MSFSIMM(torch.nn.Module):
     def __init__(self, device, num_scales=3):
-        super(MSFSIM, self).__init__()
+        super(MSFSIMM, self).__init__()
         self.num_scales = num_scales
-        self.model = FSIM().to(device)
+        self.model = FSIMM().to(device)
 
     def forward(self, img_1, img_2, as_loss=False):
         b, c, h, w = img_1.shape
