@@ -251,28 +251,28 @@ if __name__ == '__main__':
             plot_current_roc(epoch, rocauc_pixel, viz, plot_rocauc_pixel, k=2)
         print('----------------------------------------')
         print('Epoch:', epoch)
-        print('train_loss_l2 {:.6f}/ '
-              'train_loss_vq {:.6f}/ '
+        print('train_loss_mse {:.6f}/ '
+              'train_loss_comp {:.6f}/ '
               'train_loss_msssim {:.6f}/ '
               'train_loss_msgmsd {:.6f}/ '
-              'train_loss_msfsim {:.6f}'.format(np.mean(errors['train_loss_l2']),
-                                               np.mean(errors['train_loss_vq']),
+              'train_loss_msfsimm {:.6f}'.format(np.mean(errors['train_loss_mse']),
+                                               np.mean(errors['train_loss_comp']),
                                                np.mean(errors['train_loss_msssim']),
                                                np.mean(errors['train_loss_msgmsd']),
-                                               np.mean(errors['train_loss_msfsim'])), end=' ')
+                                               np.mean(errors['train_loss_msfsimm'])), end=' ')
         if epoch % 10 == 0:
-            print('test_loss_l2 {:.6f}/ '
-                  'test_loss_vq {:.6f}/ '
+            print('test_loss_mse {:.6f}/ '
+                  'test_loss_comp {:.6f}/ '
                   'test_loss_msssim {:.6f}/ '
                   'test_loss_msgmsd {:.6f}/ '
-                  'test_loss_msfsim {:.6f}'.format(np.mean(errors['test_loss_l2']),
-                                                   np.mean(errors['test_loss_vq']),
+                  'test_loss_msfsimm {:.6f}'.format(np.mean(errors['test_loss_mse']),
+                                                   np.mean(errors['test_loss_comp']),
                                                    np.mean(errors['test_loss_msssim']),
                                                    np.mean(errors['test_loss_msgmsd']),
-                                                   np.mean(errors['test_loss_msfsim'])), end=' ')
+                                                   np.mean(errors['test_loss_msfsimm'])), end=' ')
             print('\nimage_rocauc {:.6f}/ '
-                  'pixel_rocauc {:.6f}/ '.format(np.mean(rocauc_image['msfsim_img_rocauc']),
-                                                 np.mean(rocauc_pixel['msfsim_per_pixel_rocauc'])))
+                  'pixel_rocauc {:.6f}/ '.format(np.mean(rocauc_image['msfsimm_img_rocauc']),
+                                                 np.mean(rocauc_pixel['msfsimm_per_pixel_rocauc'])))
         else:
             print('\n')
 
