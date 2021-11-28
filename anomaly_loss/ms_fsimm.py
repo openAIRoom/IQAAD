@@ -311,7 +311,7 @@ class MSFSIMM(torch.nn.Module):
 
     def forward(self, img_1, img_2, as_loss=False):
         b, c, h, w = img_1.shape
-        fsim_map = 0
+        fsimm_map = 0
 
         for scale in range(self.num_scales):
             if scale > 0:
@@ -319,9 +319,9 @@ class MSFSIMM(torch.nn.Module):
                 img_2 = F.avg_pool2d(img_2, kernel_size=2, stride=2, padding=0)
 
             score, out_map = self.model(img_1, img_2, as_loss=as_loss)
-            fsim_map += F.interpolate(out_map, size=(h, w), mode="bilinear", align_corners=False)
+            fsimm_map += F.interpolate(out_map, size=(h, w), mode="bilinear", align_corners=False)
 
         if as_loss:
-            return torch.mean(1 - fsim_map / self.num_scales)
+            return torch.mean(1 - fsimm_map / self.num_scales)
         else:
-            return torch.mean(1 - fsim_map / self.num_scales, axis=1).unsqueeze(1)
+            return torch.mean(1 - fsimm_map / self.num_scales, axis=1).unsqueeze(1)
