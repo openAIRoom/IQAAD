@@ -24,9 +24,9 @@ from dataloader import load_data
 from utils import load_model, save_model, plot_current_roc, plot_current_errors, \
     unorm_image, mean_smoothing, to_gray, replicate_gray
 
-from anomaly_loss.ms_fsimm_score import MSFSIMM
-from anomaly_loss.ms_gmsd_score import MSGMSD
-from anomaly_loss.ms_ssim_our import MSSSIM
+from anomaly_loss.ms_fsimm import MSFSIMM
+from anomaly_loss.ms_gmsd import MSGMSD
+from anomaly_loss.ms_ssim import MSSSIM
 
 np.set_printoptions(suppress=True)
 torch.set_printoptions(sci_mode=False)
