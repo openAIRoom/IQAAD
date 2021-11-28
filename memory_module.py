@@ -136,9 +136,9 @@ class Decoder(nn.Module):
         return self._conv_trans_4(x)
 
 
-class VectorQuantizerEMA(nn.Module):
+class COMP_EMA(nn.Module):
     def __init__(self, num_embeddings, embedding_dim, commitment_cost, decay=0.99, epsilon=1e-5):
-        super(VectorQuantizerEMA, self).__init__()
+        super(COMP_EMA, self).__init__()
 
         self._embedding_dim = embedding_dim
         self._num_embeddings = num_embeddings
