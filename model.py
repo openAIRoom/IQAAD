@@ -9,7 +9,7 @@
 import torch
 from torch import nn
 
-from memory_module import Encoder, Decoder, VectorQuantizerEMA, weights_init
+from memory_module import Encoder, Decoder, COMP_EMA, weights_init
 
 
 class MemoryModule(torch.nn.Module):
@@ -27,7 +27,7 @@ class MemoryModule(torch.nn.Module):
                                num_residual_layers,
                                num_residual_hiddens)
 
-        self.codebook = VectorQuantizerEMA(K, dim, commitment_cost)
+        self.codebook = COMP_EMA(K, dim, commitment_cost)
 
         self.decoder = Decoder(dim,
                                dim,
