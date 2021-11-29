@@ -3,7 +3,7 @@ Official implementation for the paper "***Unsupervised Anomaly Detection Based o
 
 ## Descriptions
 This project is a [Pytorch](https://pytorch.org/) implementation of IQAAD. 
-This paper improves two classical FR-IQA metrics, the gradient magnitude similarity deviation(GMSD) and the feature similarity induced metric(FSIM), so they can better haddle the intrinsic difficulties of anomaly detection tasks. In addition, we proposes a memory bank with a new updating stratery.
+We improve two classical FR-IQA metrics, the gradient magnitude similarity deviation(GMSD) and the feature similarity induced metric(FSIM), so they can better haddle the intrinsic difficulties of anomaly detection tasks. In addition, we proposes a memory bank with a new updating stratery.
 
 ## Pipeline of IQAAD
 [![logo](https://github.com/openAIRoom/IQAAD/blob/main/Pipeline.jpg)](https://github.com/openAIRoom/IQAAD/blob/main/Pipeline.jpg) 
