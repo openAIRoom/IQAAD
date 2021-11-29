@@ -107,7 +107,7 @@ def test(epoch, memory_model, test_loader, errors, rocauc_image, rocauc_pixel):
 
     memory_model.eval()
 
-    msfsim_scores_maps = []
+    msfsimm_scores_maps = []
 
     gt_list = []
     gt_mask_list = []
