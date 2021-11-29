@@ -35,7 +35,7 @@ os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 
 def parse_arg():
     parser = argparse.ArgumentParser('Parameters')
-    parser.add_argument('--dataroot', default="G:/Datasets/MVTec/mvtec_anomaly_detection/zipper/", type=str, help='data path')
+    parser.add_argument('--dataroot', default="G:/Datasets/MVTec/mvtec_anomaly_detection/bottle/", type=str, help='data path')
     parser.add_argument('--img_size', default=256, type=int, help='image size')
     parser.add_argument('--nc', default=3, type=int, help='channel of input image')
     parser.add_argument('--dim', type=int, default=512, help='size of the latent vectors')
