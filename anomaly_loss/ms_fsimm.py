@@ -249,6 +249,8 @@ def fsimm(imageRef, imageDis, as_loss):
         IxY2 = F.conv2d(Y2, dx, stride=1, padding=1)
         IyY2 = F.conv2d(Y2, dy, stride=1, padding=1)
         gradientMap2 = torch.sqrt(IxY2 ** 2 + IyY2 ** 2 + 1e-12)
+        
+        T2 = 0.0026 * (255 / 3.) ** 2
     else:
         prewitt_x = torch.Tensor([[[[1, 0, -1], [1, 0, -1], [1, 0, -1]]]]) / 3.0  # (1, 1, 3, 3)
         prewitt_x = prewitt_x.repeat(channels, 1, 1, 1)  # (channels, 1, 3, 3)
@@ -263,9 +265,10 @@ def fsimm(imageRef, imageDis, as_loss):
         IxY2 = F.conv2d(imageDis, prewitt_x, stride=1, padding=1, groups=channels)
         IyY2 = F.conv2d(imageDis, prewitt_y, stride=1, padding=1, groups=channels)
         gradientMap2 = torch.sqrt(IxY2 ** 2 + IyY2 ** 2 + 1e-12)
+        
+        T2 = 0.0026 * 255 ** 2
 
     T1 = 0.85
-    T2 = 0.0026 * (255 / 3.) ** 2
     PCSimMatrix = (2 * PC1 * PC2 + T1) / (PC1 ** 2 + PC2 ** 2 + T1)
     gradientSimMatrix = (2 * gradientMap1 * gradientMap2 + T2) / (gradientMap1 ** 2 + gradientMap2 ** 2 + T2)
     PCm = torch.max(PC1, PC2)
