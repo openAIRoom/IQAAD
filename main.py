@@ -40,7 +40,7 @@ def parse_arg():
     parser.add_argument('--nc', default=3, type=int, help='channel of input image')
     parser.add_argument('--dim', type=int, default=512, help='size of the latent vectors')
     parser.add_argument('--K', type=int, default=100, help='number of latent vectors')
-    parser.add_argument('--batch_size', default=6, type=int, help='batch size')
+    parser.add_argument('--batch_size', default=4, type=int, help='batch size')
 
     parser.add_argument('--lr', default=0.0001, type=float, help='learning rate')
     parser.add_argument('--beta1', type=float, default=0.5, help='beta1')
