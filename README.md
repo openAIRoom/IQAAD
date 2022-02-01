@@ -20,15 +20,6 @@ You will need:
 [![logo](https://github.com/openAIRoom/IQAAD/blob/main/Samples/mvtec_more.jpg)](https://github.com/openAIRoom/IQAAD/blob/main/Samples/mvtec_more.jpg) 
 
 ## Citation
-If you find our code helpful in your research or work please cite our paper.
-```
-@inproceedings{IQAAD,
-  title={Unsupervised Anomaly Detection Based on Full-Reference Image Quality Assessment},
-  author={*},
-  booktitle={*},
-  pages={*},    
-  year={2022}
-}
-```
+*
 
 **The released codes are only allowed for non-commercial use.**
