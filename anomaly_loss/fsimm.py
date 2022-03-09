@@ -289,28 +289,28 @@ def fsimm(imageRef, imageDis, as_loss):
     return torch.sum(SimMatrixC, dim=[1, 2, 3]) / torch.sum(PCm, dim=[1, 2, 3]), out_map
 
 
-# class FSIMM(torch.nn.Module):
-#     def __init__(self, channels=3):
-#         super(FSIMM, self).__init__()
+class Fsimm(torch.nn.Module):
+    def __init__(self, channels=3):
+        super(Fsimm, self).__init__()
 
-#     def forward(self, y, x, as_loss=True):
-#         assert x.shape == y.shape
-#         x = x * 255
-#         y = y * 255
-#         if as_loss:
-#             score, out_map = fsimm(x, y, as_loss=as_loss)
-#             return score, out_map
-#         else:
-#             with torch.no_grad():
-#                 score, out_map = fsimm(x, y, as_loss=as_loss)
-#             return score, out_map
+    def forward(self, y, x, as_loss=True):
+        assert x.shape == y.shape
+        x = x * 255
+        y = y * 255
+        if as_loss:
+            score, out_map = fsimm(x, y, as_loss=as_loss)
+            return score, out_map
+        else:
+            with torch.no_grad():
+                score, out_map = fsimm(x, y, as_loss=as_loss)
+            return score, out_map
 
 
 class FSIMM(torch.nn.Module):
     def __init__(self, device, num_scales=3):
-        super(MSFSIMM, self).__init__()
+        super(FSIMM, self).__init__()
         self.num_scales = num_scales
-        self.model = FSIMM().to(device)
+        self.model = Fsimm().to(device)
 
     def forward(self, img_1, img_2, as_loss=False):
         b, c, h, w = img_1.shape
