@@ -24,7 +24,7 @@ from dataloader import load_data
 from utils import load_model, save_model, plot_current_roc, plot_current_errors, \
     unorm_image, mean_smoothing, to_gray, replicate_gray
 
-from anomaly_loss.ms_fsimm import MSFSIMM
+from anomaly_loss.fsimm import FSIMM
 from anomaly_loss.ms_gmsd import MSGMSD
 from anomaly_loss.ms_ssim import MSSSIM
 
@@ -73,11 +73,11 @@ def train(epoch, memory_model, train_loader, errors):
         mse_loss = mse(datas, recon)
         msssim_loss = msssim(datas, recon, as_loss=True)
         msgmsd_loss = msgmsd(datas, recon, as_loss=True)
-        msfsimm_loss = msfsimm(replicate_gray(datas), replicate_gray(recon), as_loss=True)
+        fsimm_loss = fsimm(replicate_gray(datas), replicate_gray(recon), as_loss=True)
 
         loss = mse_loss + \
                comp_loss + \
-               msgmsd_loss + msssim_loss + msfsimm_loss
+               msgmsd_loss + msssim_loss + fsimm_loss
         loss.backward()
         optimizer.step()
 
@@ -85,16 +85,16 @@ def train(epoch, memory_model, train_loader, errors):
         errors['train_loss_comp'].append(comp_loss.item())
         errors['train_loss_msssim'].append(msssim_loss.item())
         errors['train_loss_msgmsd'].append(msgmsd_loss.item())
-        errors['train_loss_msfsimm'].append(msfsimm_loss.item())
+        errors['train_loss_fsimm'].append(fsimm_loss.item())
 
     if epoch % 10 == 0:
-        msfsimm_anomaly_map = msfsimm(datas, recon, as_loss=False)
-        msfsimm_anomaly_map = mean_smoothing(msfsimm_anomaly_map, kernel_size=25)
+        fsimm_anomaly_map = fsimm(datas, recon, as_loss=False)
+        fsimm_anomaly_map = mean_smoothing(fsimm_anomaly_map, kernel_size=25)
 
         save_maps = []
         [save_maps.extend([unorm_image(datas, opt.data_mean, opt.data_std)[i:i+1],
                            unorm_image(recon, opt.data_mean, opt.data_std)[i:i+1],
-                           msfsimm_anomaly_map[i:i+1].repeat(1, 3, 1, 1)]) for i in range(min(3, datas.shape[0]))]
+                           fsimm_anomaly_map[i:i+1].repeat(1, 3, 1, 1)]) for i in range(min(3, datas.shape[0]))]
         save_image(torch.cat(save_maps, dim=0).data.cpu(),
                    '{}/image_{}_m.jpg'.format(opt.outfile + 'train', epoch), nrow=3)
 
@@ -107,7 +107,7 @@ def test(epoch, memory_model, test_loader, errors, rocauc_image, rocauc_pixel):
 
     memory_model.eval()
 
-    msfsimm_scores_maps = []
+    fsimm_scores_maps = []
 
     gt_list = []
     gt_mask_list = []
@@ -123,33 +123,33 @@ def test(epoch, memory_model, test_loader, errors, rocauc_image, rocauc_pixel):
 
             msfsimm_anomaly_map = msfsimm(datas, recon, as_loss=False)
 
-        msfsimm_anomaly_map = mean_smoothing(msfsimm_anomaly_map, kernel_size=25)
-        msfsimm_scores_maps.extend(msfsimm_anomaly_map.squeeze(1).detach().cpu().numpy())
+        fsimm_anomaly_map = mean_smoothing(fsimm_anomaly_map, kernel_size=25)
+        fsimm_scores_maps.extend(fsimm_anomaly_map.squeeze(1).detach().cpu().numpy())
 
         # loss
         mse_loss = mse(datas, recon)
         msssim_loss = msssim(datas, recon, as_loss=True)
         msgmsd_loss = msgmsd(datas, recon, as_loss=True)
-        msfsimm_loss = msfsimm(replicate_gray(datas), replicate_gray(recon), as_loss=True)
+        fsimm_loss = fsimm(replicate_gray(datas), replicate_gray(recon), as_loss=True)
 
         errors['test_loss_mse'].append(mse_loss.item())
         errors['test_loss_comp'].append(comp_loss.item())
         errors['test_loss_msssim'].append(msssim_loss.item())
         errors['test_loss_msgmsd'].append(msgmsd_loss.item())
-        errors['test_loss_msfsimm'].append(msfsimm_loss.item())
+        errors['test_loss_fsimm'].append(fsimm_loss.item())
 
         if iteration < 10:
             save_maps = []
             [save_maps.extend([unorm_image(datas, opt.data_mean, opt.data_std)[i:i + 1],
                                unorm_image(recon, opt.data_mean, opt.data_std)[i:i + 1],
-                               msfsimm_anomaly_map[i:i + 1].repeat(1, 3, 1, 1)]) for i in
+                               fsimm_anomaly_map[i:i + 1].repeat(1, 3, 1, 1)]) for i in
              range(min(3, datas.shape[0]))]
             save_image(torch.cat(save_maps, dim=0).data.cpu(),
                        '{}/image_{}.jpg'.format(opt.outfile + 'test/epoch_' + str(epoch), iteration + 1), nrow=3)
 
-    msfsimm_img_rocauc, msfsimm_per_pixel_rocauc = auc_calculate(msfsimm_scores_maps, gt_list, gt_mask_list)
-    rocauc_image['msfsimm_img_rocauc'].append(msfsimm_img_rocauc)
-    rocauc_pixel['msfsimm_per_pixel_rocauc'].append(msfsimm_per_pixel_rocauc)
+    fsimm_img_rocauc, fsimm_per_pixel_rocauc = auc_calculate(fsimm_scores_maps, gt_list, gt_mask_list)
+    rocauc_image['fsimm_img_rocauc'].append(fsimm_img_rocauc)
+    rocauc_pixel['fsimm_per_pixel_rocauc'].append(fsimm_per_pixel_rocauc)
 
 
 def auc_calculate(scores, gt_list, gt_mask_list):
@@ -226,7 +226,7 @@ if __name__ == '__main__':
     msssim = MSSSIM()
     msgmsd = MSGMSD(device=device)
     mse = nn.MSELoss(reduction='mean')
-    msfsimm = MSFSIMM(device=device)
+    fsimm = FSIMM(device=device)
 
     for epoch in range(opt.start_epoch, opt.n_epoch):
         errors = defaultdict(list)
@@ -255,24 +255,24 @@ if __name__ == '__main__':
               'train_loss_comp {:.6f}/ '
               'train_loss_msssim {:.6f}/ '
               'train_loss_msgmsd {:.6f}/ '
-              'train_loss_msfsimm {:.6f}'.format(np.mean(errors['train_loss_mse']),
+              'train_loss_fsimm {:.6f}'.format(np.mean(errors['train_loss_mse']),
                                                np.mean(errors['train_loss_comp']),
                                                np.mean(errors['train_loss_msssim']),
                                                np.mean(errors['train_loss_msgmsd']),
-                                               np.mean(errors['train_loss_msfsimm'])), end=' ')
+                                               np.mean(errors['train_loss_fsimm'])), end=' ')
         if epoch % 10 == 0:
             print('test_loss_mse {:.6f}/ '
                   'test_loss_comp {:.6f}/ '
                   'test_loss_msssim {:.6f}/ '
                   'test_loss_msgmsd {:.6f}/ '
-                  'test_loss_msfsimm {:.6f}'.format(np.mean(errors['test_loss_mse']),
+                  'test_loss_fsimm {:.6f}'.format(np.mean(errors['test_loss_mse']),
                                                    np.mean(errors['test_loss_comp']),
                                                    np.mean(errors['test_loss_msssim']),
                                                    np.mean(errors['test_loss_msgmsd']),
-                                                   np.mean(errors['test_loss_msfsimm'])), end=' ')
+                                                   np.mean(errors['test_loss_fsimm'])), end=' ')
             print('\nimage_rocauc {:.6f}/ '
-                  'pixel_rocauc {:.6f}/ '.format(np.mean(rocauc_image['msfsimm_img_rocauc']),
-                                                 np.mean(rocauc_pixel['msfsimm_per_pixel_rocauc'])))
+                  'pixel_rocauc {:.6f}/ '.format(np.mean(rocauc_image['fsimm_img_rocauc']),
+                                                 np.mean(rocauc_pixel['fsimm_per_pixel_rocauc'])))
         else:
             print('\n')
 
